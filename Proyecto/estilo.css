@@ -193,6 +193,145 @@ tr.stock-bajo td { color: var(--rojo); }
     box-shadow: 0 2px 4px #0001;
 }
 
+.ficha-dueno {
+    display: flex;
+    gap: 2em;
+    align-items: flex-start;
+    margin-bottom: 2em;
+}
+.ficha-dueno .avatar-dueno {
+    min-width: 120px;
+    min-height: 120px;
+    width: 120px; height: 120px;
+    border-radius: 12px;
+    background: #e3f2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5em;
+    margin-right: 1em;
+    border: 1.5px solid var(--borde);
+}
+.ficha-dueno .datos-dueno {
+    flex: 1;
+}
+.ficha-dueno .boton-editar-dueno {
+    float: right;
+    background: var(--verde-oscuro);
+    color: #fff;
+    border: none;
+    border-radius: 18px;
+    padding: .4em 1.3em;
+    font-size: 1em;
+    font-weight: 500;
+    margin-left: 1em;
+    cursor: pointer;
+    transition: background .2s;
+}
+.ficha-dueno .boton-editar-dueno:hover {
+    background: var(--verde);
+    color: var(--negro);
+}
+.tabla-mascotas-dueno {
+    width: 90%;
+    margin: 0 auto 1.5em auto;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1.5px solid var(--borde);
+    box-shadow: 0 1px 3px #0001;
+}
+.tabla-mascotas-dueno th {
+    background: var(--verde);
+    text-align: center;
+}
+.tabla-mascotas-dueno td {
+    text-align: center;
+    background: #f7fff7;
+}
+.boton-modificar-mascotas {
+    display: block;
+    margin: 1em auto 0 auto;
+    background: var(--verde-oscuro);
+    color: #fff;
+    padding: .7em 2.4em;
+    border: none;
+    border-radius: 18px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+}
+.boton-modificar-mascotas:hover {
+    background: var(--verde);
+    color: var(--negro);
+}
+
+.lista-duenos-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2em;
+    margin: 2em 0;
+}
+.card-dueno-lista {
+    background: #f9fff7;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px #0001;
+    padding: 1em 1em .7em 1em;
+    min-width: 220px;
+    max-width: 270px;
+    flex: 1 1 220px;
+    display: flex;
+    gap: 1em;
+    align-items: center;
+    border: 1.5px solid var(--borde);
+    cursor: pointer;
+    transition: box-shadow .2s, border .2s;
+}
+.card-dueno-lista:hover {
+    box-shadow: 0 3px 16px #0002;
+    border: 1.5px solid var(--verde-oscuro);
+    background: #f3fff3;
+}
+.card-dueno-lista .avatar-dueno-lista {
+    width: 56px; height: 56px;
+    background: #e3f2e6;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2.6em;
+    margin-right: .5em;
+}
+.card-dueno-lista .nombre-dueno {
+    font-weight: bold;
+    font-size: 1.12em;
+    color: #1d4029;
+}
+.card-dueno-lista .dni-dueno {
+    color: #525252;
+    font-size: .95em;
+}
+.card-dueno-lista .eliminar-dueno-btn {
+    background: var(--rojo);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: .2em .7em;
+    font-size: .95em;
+    margin-left: .8em;
+    cursor: pointer;
+    transition: background .2s;
+}
+.card-dueno-lista .eliminar-dueno-btn:hover {
+    background: #a01111;
+}
+.flecha-volver {
+    font-size: 1.8em;
+    color: var(--verde-oscuro);
+    cursor: pointer;
+    margin-bottom: 1em;
+    transition: color .2s;
+}
+.flecha-volver:hover { color: var(--rojo); }
+
 .modal {
     display: none;
     position: fixed;
@@ -228,7 +367,8 @@ tr.stock-bajo td { font-weight: bold; }
 
 @media (max-width: 700px) {
     main { padding: 0.2em; }
-    .card-mascota { flex-direction: column; align-items: stretch; }
+    .card-mascota, .ficha-dueno { flex-direction: column; align-items: stretch; }
     header { flex-direction: column; }
     nav { width: 100%; }
+    .ficha-dueno .avatar-dueno { margin: 0 auto 1em auto; }
 }

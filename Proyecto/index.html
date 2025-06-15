@@ -19,18 +19,13 @@
     <main>
         <!-- Sección Dueños -->
         <section id="seccion-duenos" class="seccion">
-            <h2>Gestión de Dueños</h2>
-            <form id="form-dueno">
-                <input type="text" placeholder="Nombre" required name="nombre">
-                <input type="text" placeholder="DNI" required name="dni">
-                <button type="submit">Agregar dueño</button>
-            </form>
-            <table>
-                <thead>
-                    <tr><th>Nombre</th><th>DNI</th><th>Mascotas</th><th>Acciones</th></tr>
-                </thead>
-                <tbody id="tabla-duenos"></tbody>
-            </table>
+            <div id="vista-lista-duenos">
+                <h2>Lista de Dueños</h2>
+                <button id="btn-agregar-dueno">Agregar dueño</button>
+                <div id="listado-duenos"></div>
+            </div>
+            <div id="vista-ficha-dueno" style="display:none"></div>
+            <div id="vista-form-dueno" style="display:none"></div>
         </section>
         <!-- Sección Mascotas -->
         <section id="seccion-mascotas" class="seccion">
@@ -82,7 +77,7 @@
         </section>
     </main>
 
-    <!-- Modal para editar mascota -->
+    <!-- Modales -->
     <div id="modal-mascota" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal" data-modal="modal-mascota">&times;</span>
@@ -90,7 +85,6 @@
             <form id="form-editar-mascota"></form>
         </div>
     </div>
-    <!-- Modal para editar producto -->
     <div id="modal-producto" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal" data-modal="modal-producto">&times;</span>
@@ -98,12 +92,18 @@
             <form id="form-editar-producto"></form>
         </div>
     </div>
-    <!-- Modal para historial mascota -->
     <div id="modal-historial" class="modal">
         <div class="modal-contenido">
             <span class="cerrar-modal" data-modal="modal-historial">&times;</span>
             <h3>Historial de Mascota</h3>
             <div id="historial-mascota"></div>
+        </div>
+    </div>
+    <div id="modal-mascotas-dueno" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" data-modal="modal-mascotas-dueno">&times;</span>
+            <h3>Modificar mascotas del dueño</h3>
+            <div id="contenedor-mascotas-dueno"></div>
         </div>
     </div>
     <script src="app.js"></script>

@@ -1,7 +1,7 @@
 // --- Estado en memoria ---
 let duenos = [
-    { id: 1, nombre: "Mora", dni: "12345678" },
-    { id: 2, nombre: "Juan", dni: "87654321" }
+    { id: 1, nombre: "Mora", dni: "12345678", nacimiento: "2000-03-09", correo: "mora@mail.com", telefono: "351123456", avatar: 1 },
+    { id: 2, nombre: "Juan", dni: "87654321", nacimiento: "1998-04-25", correo: "juan@mail.com", telefono: "351999888", avatar: 2 }
 ];
 let mascotas = [
     { id: 1, nombre: "Benja", edad: 5, especie: "Gato", peso: "5", nacimiento: "2019-03-10", dueno: 1, historial: ["Vacuna antirrábica 2023", "Desparasitación 2024"] },
@@ -35,7 +35,7 @@ function mostrarSeccion(nombre) {
     navBtns[nombre].classList.add("active");
     if(nombre === "mascotas") actualizarMascotas();
     if(nombre === "productos") actualizarProductos();
-    if(nombre === "duenos") actualizarDuenos();
+    if(nombre === "duenos") vistaListaDuenos();
 }
 navBtns.duenos.addEventListener("click", ()=> mostrarSeccion("duenos"));
 navBtns.mascotas.addEventListener("click", ()=> mostrarSeccion("mascotas"));
@@ -44,53 +44,161 @@ navBtns.usuario.addEventListener("click", ()=> mostrarSeccion("usuario"));
 mostrarSeccion("mascotas");
 
 // --- Dueños ---
-function actualizarDuenos() {
-    let body = document.getElementById("tabla-duenos");
-    body.innerHTML = "";
-    duenos.forEach(d => {
-        let masc = mascotas.filter(m=>m.dueno === d.id).map(m=>m.nombre).join(", ");
-        let tr = document.createElement("tr");
-        tr.innerHTML = `<td>${d.nombre}</td>
-            <td>${d.dni}</td>
-            <td>${masc || "-"}</td>
-            <td>
-                <button onclick="editarDueno(${d.id})">Editar</button>
-                <button onclick="eliminarDueno(${d.id})">Eliminar</button>
-            </td>`;
-        body.appendChild(tr);
-    });
-    // actualizar select en mascotas
-    let sel = document.querySelector("#form-mascota select[name=dueno]");
-    sel.innerHTML = `<option value="">Dueño</option>`;
-    duenos.forEach(d => {
-        sel.innerHTML += `<option value="${d.id}">${d.nombre} (${d.dni})</option>`;
-    });
+function vistaListaDuenos() {
+    document.getElementById("vista-lista-duenos").style.display = "";
+    document.getElementById("vista-ficha-dueno").style.display = "none";
+    document.getElementById("vista-form-dueno").style.display = "none";
+    renderListaDuenos();
 }
-document.getElementById("form-dueno").onsubmit = function(e) {
-    e.preventDefault();
-    let nombre = this.nombre.value.trim();
-    let dni = this.dni.value.trim();
-    if(!nombre || !dni) return;
-    duenos.push({id: nextDueno++, nombre, dni});
-    this.reset();
-    actualizarDuenos();
-};
-window.editarDueno = function(id) {
-    let d = duenos.find(d=>d.id===id);
-    if(!d) return;
-    let nombre = prompt("Editar nombre del dueño:", d.nombre);
-    if(nombre) d.nombre = nombre;
-    let dni = prompt("Editar DNI del dueño:", d.dni);
-    if(dni) d.dni = dni;
-    actualizarDuenos();
-};
+function renderListaDuenos() {
+    let cont = document.getElementById("listado-duenos");
+    cont.innerHTML = "";
+    let cards = document.createElement("div");
+    cards.className = "lista-duenos-cards";
+    duenos.forEach(d => {
+        let div = document.createElement("div");
+        div.className = "card-dueno-lista";
+        div.onclick = (e)=>{ if(e.target.classList.contains('eliminar-dueno-btn')) return; mostrarFichaDueno(d.id); };
+        div.innerHTML = `
+            <div class="avatar-dueno-lista">${getAvatarDueno(d.avatar)}</div>
+            <div>
+                <div class="nombre-dueno">${d.nombre}</div>
+                <div class="dni-dueno">DNI: ${d.dni}</div>
+            </div>
+            <button class="eliminar-dueno-btn" onclick="eliminarDueno(${d.id});event.stopPropagation();">Eliminar</button>
+        `;
+        cards.appendChild(div);
+    });
+    cont.appendChild(cards);
+}
+document.getElementById("btn-agregar-dueno").onclick = () => mostrarFormDueno();
+
 window.eliminarDueno = function(id) {
     if(mascotas.some(m=>m.dueno===id)) {
         alert("No puedes eliminar un dueño con mascotas a cargo.");
         return;
     }
     duenos = duenos.filter(d=>d.id!==id);
-    actualizarDuenos();
+    renderListaDuenos();
+};
+
+// Ficha de dueño
+function mostrarFichaDueno(id) {
+    let d = duenos.find(dd=>dd.id===id);
+    if(!d) return;
+    document.getElementById("vista-lista-duenos").style.display = "none";
+    document.getElementById("vista-ficha-dueno").style.display = "";
+    document.getElementById("vista-form-dueno").style.display = "none";
+    let cont = document.getElementById("vista-ficha-dueno");
+    let mascotasDueno = mascotas.filter(m=>m.dueno===d.id);
+    let tablaMascotas = `
+        <table class="tabla-mascotas-dueno">
+            <thead>
+                <tr><th>Mascotas</th><th>Especie</th></tr>
+            </thead>
+            <tbody>
+                ${
+                    mascotasDueno.length
+                    ? mascotasDueno.map(m=>`<tr><td>${m.nombre}</td><td>${m.especie}</td></tr>`).join("")
+                    : `<tr><td colspan="2" style="color:#888">Sin mascotas</td></tr>`
+                }
+            </tbody>
+        </table>
+    `;
+    cont.innerHTML = `
+        <span class="flecha-volver" title="Volver" onclick="vistaListaDuenos()">&#8592;</span>
+        <div class="ficha-dueno">
+            <div class="avatar-dueno">${getAvatarDueno(d.avatar, true)}</div>
+            <div class="datos-dueno">
+                <div style="display:flex;align-items:center">
+                    <span style="font-size:2em;font-weight:600">${d.nombre}</span>
+                    <button class="boton-editar-dueno" onclick="mostrarFormDueno(${d.id})">Editar</button>
+                </div>
+                <div style="display:flex;gap:2em;margin-top:.7em">
+                    <div>
+                        <b>Fecha de Nacimiento:</b><br>${d.nacimiento||'-'}
+                        <br><b>DNI:</b><br>${d.dni||'-'}
+                    </div>
+                    <div>
+                        <b>Correo electrónico:</b><br>${d.correo||'-'}
+                        <br><b>Teléfono:</b><br>${d.telefono||'-'}
+                    </div>
+                </div>
+            </div>
+        </div>
+        ${tablaMascotas}
+        <button class="boton-modificar-mascotas" onclick="abrirModalMascotasDueno(${d.id})">Modificar mascotas</button>
+    `;
+}
+
+// Alta/edición de dueño
+function mostrarFormDueno(id=null) {
+    let d = id ? duenos.find(dd=>dd.id===id) : {nombre:"",dni:"",nacimiento:"",correo:"",telefono:"",avatar:1};
+    document.getElementById("vista-lista-duenos").style.display = "none";
+    document.getElementById("vista-ficha-dueno").style.display = "none";
+    document.getElementById("vista-form-dueno").style.display = "";
+    let cont = document.getElementById("vista-form-dueno");
+    cont.innerHTML = `
+        <span class="flecha-volver" title="Volver" onclick="${id?'mostrarFichaDueno('+id+')':'vistaListaDuenos()'}">&#8592;</span>
+        <h2>${id?'Editar dueño':'Agregar dueño'}</h2>
+        <form id="form-nuevo-dueno" style="flex-direction:column;max-width:400px;">
+            <label>Nombre completo<input type="text" name="nombre" required value="${d.nombre||""}"></label>
+            <label>DNI<input type="text" name="dni" required value="${d.dni||""}"></label>
+            <label>Fecha de nacimiento<input type="date" name="nacimiento" value="${d.nacimiento||""}"></label>
+            <label>Correo electrónico<input type="email" name="correo" value="${d.correo||""}"></label>
+            <label>Teléfono<input type="text" name="telefono" value="${d.telefono||""}"></label>
+            <label>Avatar
+                <select name="avatar">
+                    <option value="1" ${d.avatar==1?"selected":""}>Avatar 1</option>
+                    <option value="2" ${d.avatar==2?"selected":""}>Avatar 2</option>
+                    <option value="3" ${d.avatar==3?"selected":""}>Avatar 3</option>
+                </select>
+            </label>
+            <button type="submit">${id?'Guardar cambios':'Agregar'}</button>
+        </form>
+    `;
+    document.getElementById("form-nuevo-dueno").onsubmit = function(e) {
+        e.preventDefault();
+        let datos = Object.fromEntries(new FormData(this).entries());
+        datos.avatar = parseInt(datos.avatar||1);
+        if(id) {
+            Object.assign(d, datos);
+        } else {
+            datos.id = nextDueno++;
+            duenos.push(datos);
+        }
+        vistaListaDuenos();
+    };
+}
+
+// Modal modificar mascotas de dueño
+window.abrirModalMascotasDueno = function(id) {
+    let d = duenos.find(dd=>dd.id===id);
+    if(!d) return;
+    let cont = document.getElementById("contenedor-mascotas-dueno");
+    let todasMascotas = mascotas.map(m=>`
+        <label style="display:flex;align-items:center;gap:.7em;margin-bottom:.3em;">
+            <input type="checkbox" value="${m.id}" ${m.dueno==id?"checked":""}>
+            ${m.nombre} (${m.especie})
+        </label>
+    `).join("") || "<p>No hay mascotas registradas.</p>";
+    cont.innerHTML = `
+        <form id="form-mod-mascotas">
+            ${todasMascotas}
+            <button type="submit" style="margin-top:1em">Guardar</button>
+        </form>
+    `;
+    document.getElementById("form-mod-mascotas").onsubmit = function(e) {
+        e.preventDefault();
+        let checks = Array.from(this.querySelectorAll("input[type=checkbox]"));
+        mascotas.forEach(m=>{
+            if(checks.some(c=>c.checked && +c.value===m.id)) m.dueno = id;
+            else if(m.dueno===id) m.dueno = null;
+        });
+        cerrarModal("modal-mascotas-dueno");
+        mostrarFichaDueno(id);
+    };
+    abrirModal("modal-mascotas-dueno");
 };
 
 // --- Mascotas ---
@@ -118,6 +226,14 @@ function actualizarMascotas() {
         `;
         cont.appendChild(card);
     });
+    // actualizar select en mascotas
+    let sel = document.querySelector("#form-mascota select[name=dueno]");
+    if(sel) {
+        sel.innerHTML = `<option value="">Dueño</option>`;
+        duenos.forEach(d => {
+            sel.innerHTML += `<option value="${d.id}">${d.nombre} (${d.dni})</option>`;
+        });
+    }
 }
 document.getElementById("form-mascota").onsubmit = function(e) {
     e.preventDefault();
@@ -289,8 +405,16 @@ function getMascotaEmoji(especie) {
     if(especie.includes("pez")) return "🐟";
     return "🐾";
 }
+function getAvatarDueno(tipo, grande=false) {
+    // SVG avatar cartoon style (3 variantes)
+    const size = grande ? 92 : 48;
+    if(tipo==2) return `<img src="https://api.dicebear.com/8.x/open-peeps/svg?seed=Tom&backgroundColor=b7e6a2" width="${size}" height="${size}" alt="avatar" style="border-radius:50%">`;
+    if(tipo==3) return `<img src="https://api.dicebear.com/8.x/adventurer/svg?seed=Alex&backgroundColor=b7e6a2" width="${size}" height="${size}" alt="avatar" style="border-radius:50%">`;
+    // Default tipo 1 - hombre genérico
+    return `<img src="https://api.dicebear.com/8.x/icons/svg?seed=User&backgroundColor=b7e6a2" width="${size}" height="${size}" alt="avatar" style="border-radius:50%">`;
+}
 
 // --- Inicialización ---
-actualizarDuenos();
+vistaListaDuenos();
 actualizarMascotas();
 actualizarProductos();
