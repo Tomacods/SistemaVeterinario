@@ -12,99 +12,22 @@
         <nav>
             <button id="nav-duenos">Dueños</button>
             <button id="nav-mascotas">Mascotas</button>
+            <button id="nav-recetas">Recetas</button>
+            <button id="nav-ventas">Ventas</button>
             <button id="nav-productos">Productos</button>
             <button id="nav-usuario"><span class="icon-user"></span></button>
         </nav>
     </header>
     <main>
-        <!-- Sección Dueños -->
-        <section id="seccion-duenos" class="seccion">
-            <div id="vista-lista-duenos">
-                <h2>Lista de Dueños</h2>
-                <button id="btn-agregar-dueno">Agregar dueño</button>
-                <div id="listado-duenos"></div>
-            </div>
-            <div id="vista-ficha-dueno" style="display:none"></div>
-            <div id="vista-form-dueno" style="display:none"></div>
-        </section>
-        <!-- Sección Mascotas -->
-        <section id="seccion-mascotas" class="seccion">
-            <h2>Gestión de Mascotas</h2>
-            <form id="form-mascota">
-                <input type="text" placeholder="Nombre" required name="nombre">
-                <input type="number" placeholder="Edad" min="0" required name="edad">
-                <input type="text" placeholder="Especie" required name="especie">
-                <input type="text" placeholder="Peso (kg)" name="peso">
-                <input type="date" placeholder="Nacimiento" name="nacimiento">
-                <select name="dueno" required>
-                    <option value="">Dueño</option>
-                </select>
-                <button type="submit">Agregar mascota</button>
-            </form>
-            <div id="mascotas-listado"></div>
-        </section>
-        <!-- Sección Productos -->
-        <section id="seccion-productos" class="seccion">
-            <h2>Gestión de Productos</h2>
-            <form id="form-producto">
-                <input type="text" placeholder="Nombre" required name="nombre">
-                <input type="number" placeholder="Stock" min="0" required name="stock">
-                <input type="date" placeholder="Vencimiento" required name="vencimiento">
-                <button type="submit">Agregar producto</button>
-            </form>
-            <div class="buscador-productos">
-                <input type="text" id="buscar-producto" placeholder="Buscar producto">
-                <button id="filtrar-productos">Filtrar</button>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Producto</th><th>Stock</th><th>Vencido</th><th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-productos"></tbody>
-            </table>
-        </section>
-        <!-- Sección Usuario -->
-        <section id="seccion-usuario" class="seccion">
-            <div class="usuario-card">
-                <span class="icon-user usuario-grande"></span>
-                <div>
-                    <h2>Usuario Veterinario</h2>
-                    <p>¡Bienvenido a tu sistema!</p>
-                </div>
-            </div>
-        </section>
+        <section id="seccion-duenos" class="seccion"></section>
+        <section id="seccion-mascotas" class="seccion"></section>
+        <section id="seccion-recetas" class="seccion"></section>
+        <section id="seccion-ventas" class="seccion"></section>
+        <section id="seccion-productos" class="seccion"></section>
+        <section id="seccion-usuario" class="seccion"></section>
     </main>
-
-    <!-- Modales -->
-    <div id="modal-mascota" class="modal">
-        <div class="modal-contenido">
-            <span class="cerrar-modal" data-modal="modal-mascota">&times;</span>
-            <h3>Editar Mascota</h3>
-            <form id="form-editar-mascota"></form>
-        </div>
-    </div>
-    <div id="modal-producto" class="modal">
-        <div class="modal-contenido">
-            <span class="cerrar-modal" data-modal="modal-producto">&times;</span>
-            <h3>Editar Producto</h3>
-            <form id="form-editar-producto"></form>
-        </div>
-    </div>
-    <div id="modal-historial" class="modal">
-        <div class="modal-contenido">
-            <span class="cerrar-modal" data-modal="modal-historial">&times;</span>
-            <h3>Historial de Mascota</h3>
-            <div id="historial-mascota"></div>
-        </div>
-    </div>
-    <div id="modal-mascotas-dueno" class="modal">
-        <div class="modal-contenido">
-            <span class="cerrar-modal" data-modal="modal-mascotas-dueno">&times;</span>
-            <h3>Modificar mascotas del dueño</h3>
-            <div id="contenedor-mascotas-dueno"></div>
-        </div>
+    <div id="modal-general" class="modal">
+        <div class="modal-contenido" id="modal-general-content"></div>
     </div>
     <script src="app.js"></script>
 </body>

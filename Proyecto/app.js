@@ -1,57 +1,79 @@
-// --- Estado en memoria ---
+// -------------------- DATOS EN MEMORIA --------------------
 let duenos = [
     { id: 1, nombre: "Mora", dni: "12345678", nacimiento: "2000-03-09", correo: "mora@mail.com", telefono: "351123456", avatar: 1 },
     { id: 2, nombre: "Juan", dni: "87654321", nacimiento: "1998-04-25", correo: "juan@mail.com", telefono: "351999888", avatar: 2 }
 ];
 let mascotas = [
-    { id: 1, nombre: "Benja", edad: 5, especie: "Gato", peso: "5", nacimiento: "2019-03-10", dueno: 1, historial: ["Vacuna antirrábica 2023", "Desparasitación 2024"] },
-    { id: 2, nombre: "Luna", edad: 2, especie: "Perro", peso: "15", nacimiento: "2022-01-12", dueno: 2, historial: ["Baño y corte 2024"] }
+    { id: 1, nombre: "Benja", edad: 5, especie: "Gato", peso: "5", nacimiento: "2019-03-10", dueno: 1, historial: [], recetas: [] },
+    { id: 2, nombre: "Luna", edad: 2, especie: "Perro", peso: "15", nacimiento: "2022-01-12", dueno: 2, historial: [], recetas: [] }
 ];
 let productos = [
-    { id: 1, nombre: "Mercepton Injetável 20 Ml", stock: 10, vencimiento: addDays(-30) },
-    { id: 2, nombre: "Diuravet - Riverfarma", stock: 0, vencimiento: addDays(90) },
-    { id: 3, nombre: "CORTISOL (Prednisolona)", stock: 5, vencimiento: addDays(-5) },
-    { id: 4, nombre: "Antibiótico Ampicilina Oral", stock: 1, vencimiento: addDays(-1) }
+    { id: 1, nombre: "Antibiótico Oral", stock: 12, vencimiento: addDays(30), precio: 3500 },
+    { id: 2, nombre: "Vacuna Rabia", stock: 6, vencimiento: addDays(90), precio: 1800 },
+    { id: 3, nombre: "Desparasitante", stock: 5, vencimiento: addDays(-5), precio: 2200 }
 ];
-let nextDueno = 3, nextMascota = 3, nextProducto = 5;
+let recetas = [];
+let ventas = [];
+let veterinarios = [
+    { id: 1, nombre: "Dr. Martín", usuario: "martin", matricula: "VET3201" }
+];
+let nextDueno = 3, nextMascota = 3, nextProducto = 4, nextReceta = 1, nextVenta = 1;
 
-// --- Navegación ---
+// --------------------- NAVEGACIÓN ------------------------
 const navBtns = {
     duenos: document.getElementById("nav-duenos"),
     mascotas: document.getElementById("nav-mascotas"),
+    recetas: document.getElementById("nav-recetas"),
+    ventas: document.getElementById("nav-ventas"),
     productos: document.getElementById("nav-productos"),
-    usuario: document.getElementById("nav-usuario"),
+    usuario: document.getElementById("nav-usuario")
 };
 const secciones = {
     duenos: document.getElementById("seccion-duenos"),
     mascotas: document.getElementById("seccion-mascotas"),
+    recetas: document.getElementById("seccion-recetas"),
+    ventas: document.getElementById("seccion-ventas"),
     productos: document.getElementById("seccion-productos"),
-    usuario: document.getElementById("seccion-usuario"),
+    usuario: document.getElementById("seccion-usuario")
 };
 function mostrarSeccion(nombre) {
     Object.values(secciones).forEach(sec => sec.classList.remove("activa"));
     Object.values(navBtns).forEach(btn => btn.classList.remove("active"));
     secciones[nombre].classList.add("activa");
     navBtns[nombre].classList.add("active");
-    if(nombre === "mascotas") actualizarMascotas();
-    if(nombre === "productos") actualizarProductos();
-    if(nombre === "duenos") vistaListaDuenos();
+    if(nombre === "duenos") renderDuenos();
+    if(nombre === "mascotas") renderMascotas();
+    if(nombre === "recetas") renderRecetas();
+    if(nombre === "ventas") renderVentas();
+    if(nombre === "productos") renderProductos();
+    if(nombre === "usuario") renderUsuario();
 }
-navBtns.duenos.addEventListener("click", ()=> mostrarSeccion("duenos"));
-navBtns.mascotas.addEventListener("click", ()=> mostrarSeccion("mascotas"));
-navBtns.productos.addEventListener("click", ()=> mostrarSeccion("productos"));
-navBtns.usuario.addEventListener("click", ()=> mostrarSeccion("usuario"));
-mostrarSeccion("mascotas");
+navBtns.duenos.onclick = ()=> mostrarSeccion("duenos");
+navBtns.mascotas.onclick = ()=> mostrarSeccion("mascotas");
+navBtns.recetas.onclick = ()=> mostrarSeccion("recetas");
+navBtns.ventas.onclick = ()=> mostrarSeccion("ventas");
+navBtns.productos.onclick = ()=> mostrarSeccion("productos");
+navBtns.usuario.onclick = ()=> mostrarSeccion("usuario");
 
-// --- Dueños ---
-function vistaListaDuenos() {
-    document.getElementById("vista-lista-duenos").style.display = "";
-    document.getElementById("vista-ficha-dueno").style.display = "none";
-    document.getElementById("vista-form-dueno").style.display = "none";
+// ------------------ SECCIÓN DUEÑOS -----------------------
+function renderDuenos() {
+    const sec = secciones.duenos;
+    if (!sec) return;
+    sec.innerHTML = `
+        <div id="vista-lista-duenos">
+            <h2>Lista de Dueños</h2>
+            <button id="btn-agregar-dueno">Agregar dueño</button>
+            <div id="listado-duenos"></div>
+        </div>
+        <div id="vista-ficha-dueno" style="display:none"></div>
+        <div id="vista-form-dueno" style="display:none"></div>
+    `;
     renderListaDuenos();
+    sec.querySelector("#btn-agregar-dueno").onclick = ()=> mostrarFormDueno();
 }
 function renderListaDuenos() {
     let cont = document.getElementById("listado-duenos");
+    if (!cont) return;
     cont.innerHTML = "";
     let cards = document.createElement("div");
     cards.className = "lista-duenos-cards";
@@ -71,8 +93,6 @@ function renderListaDuenos() {
     });
     cont.appendChild(cards);
 }
-document.getElementById("btn-agregar-dueno").onclick = () => mostrarFormDueno();
-
 window.eliminarDueno = function(id) {
     if(mascotas.some(m=>m.dueno===id)) {
         alert("No puedes eliminar un dueño con mascotas a cargo.");
@@ -81,8 +101,6 @@ window.eliminarDueno = function(id) {
     duenos = duenos.filter(d=>d.id!==id);
     renderListaDuenos();
 };
-
-// Ficha de dueño
 function mostrarFichaDueno(id) {
     let d = duenos.find(dd=>dd.id===id);
     if(!d) return;
@@ -106,7 +124,7 @@ function mostrarFichaDueno(id) {
         </table>
     `;
     cont.innerHTML = `
-        <span class="flecha-volver" title="Volver" onclick="vistaListaDuenos()">&#8592;</span>
+        <span class="flecha-volver" title="Volver" onclick="renderDuenos()">&#8592;</span>
         <div class="ficha-dueno">
             <div class="avatar-dueno">${getAvatarDueno(d.avatar, true)}</div>
             <div class="datos-dueno">
@@ -130,8 +148,6 @@ function mostrarFichaDueno(id) {
         <button class="boton-modificar-mascotas" onclick="abrirModalMascotasDueno(${d.id})">Modificar mascotas</button>
     `;
 }
-
-// Alta/edición de dueño
 function mostrarFormDueno(id=null) {
     let d = id ? duenos.find(dd=>dd.id===id) : {nombre:"",dni:"",nacimiento:"",correo:"",telefono:"",avatar:1};
     document.getElementById("vista-lista-duenos").style.display = "none";
@@ -139,7 +155,7 @@ function mostrarFormDueno(id=null) {
     document.getElementById("vista-form-dueno").style.display = "";
     let cont = document.getElementById("vista-form-dueno");
     cont.innerHTML = `
-        <span class="flecha-volver" title="Volver" onclick="${id?'mostrarFichaDueno('+id+')':'vistaListaDuenos()'}">&#8592;</span>
+        <span class="flecha-volver" title="Volver" onclick="${id?'mostrarFichaDueno('+id+')':'renderDuenos()'}">&#8592;</span>
         <h2>${id?'Editar dueño':'Agregar dueño'}</h2>
         <form id="form-nuevo-dueno" style="flex-direction:column;max-width:400px;">
             <label>Nombre completo<input type="text" name="nombre" required value="${d.nombre||""}"></label>
@@ -167,43 +183,52 @@ function mostrarFormDueno(id=null) {
             datos.id = nextDueno++;
             duenos.push(datos);
         }
-        vistaListaDuenos();
+        renderDuenos();
     };
 }
-
-// Modal modificar mascotas de dueño
 window.abrirModalMascotasDueno = function(id) {
     let d = duenos.find(dd=>dd.id===id);
     if(!d) return;
-    let cont = document.getElementById("contenedor-mascotas-dueno");
-    let todasMascotas = mascotas.map(m=>`
-        <label style="display:flex;align-items:center;gap:.7em;margin-bottom:.3em;">
-            <input type="checkbox" value="${m.id}" ${m.dueno==id?"checked":""}>
-            ${m.nombre} (${m.especie})
-        </label>
-    `).join("") || "<p>No hay mascotas registradas.</p>";
-    cont.innerHTML = `
+    let cont = crearModalContenido(`
+        <h3>Modificar mascotas del dueño</h3>
         <form id="form-mod-mascotas">
-            ${todasMascotas}
+            ${mascotas.map(m=>
+                `<label style="display:flex;align-items:center;gap:.7em;margin-bottom:.3em;">
+                    <input type="checkbox" value="${m.id}" ${m.dueno==id?"checked":""}>
+                    ${m.nombre} (${m.especie})
+                </label>`
+            ).join("") || "<p>No hay mascotas registradas.</p>"}
             <button type="submit" style="margin-top:1em">Guardar</button>
         </form>
-    `;
-    document.getElementById("form-mod-mascotas").onsubmit = function(e) {
+    `);
+    cont.querySelector("form").onsubmit = function(e) {
         e.preventDefault();
         let checks = Array.from(this.querySelectorAll("input[type=checkbox]"));
         mascotas.forEach(m=>{
             if(checks.some(c=>c.checked && +c.value===m.id)) m.dueno = id;
             else if(m.dueno===id) m.dueno = null;
         });
-        cerrarModal("modal-mascotas-dueno");
+        cerrarModal();
         mostrarFichaDueno(id);
     };
-    abrirModal("modal-mascotas-dueno");
+    abrirModal(cont);
 };
 
-// --- Mascotas ---
-function actualizarMascotas() {
-    let cont = document.getElementById("mascotas-listado");
+// ------------------ SECCIÓN MASCOTAS ---------------------
+function renderMascotas() {
+    let sec = secciones.mascotas;
+    if (!sec) return;
+    sec.innerHTML = `
+        <h2>Gestión de Mascotas</h2>
+        <button id="btn-agregar-mascota">Registrar mascota</button>
+        <div id="mascotas-listado"></div>
+    `;
+    sec.querySelector("#btn-agregar-mascota").onclick = ()=> mostrarFormMascota();
+    renderMascotasListado();
+}
+function renderMascotasListado() {
+    const cont = document.getElementById("mascotas-listado");
+    if (!cont) return;
     cont.innerHTML = "";
     mascotas.forEach(m => {
         let dueno = duenos.find(d=>d.id===m.dueno);
@@ -220,95 +245,407 @@ function actualizarMascotas() {
                 <div class="acciones">
                     <button onclick="abrirEditarMascota(${m.id})">Editar</button>
                     <button onclick="eliminarMascota(${m.id})">Eliminar</button>
-                    <button onclick="verHistorial(${m.id})">Historial</button>
+                    <button onclick="verHistorialMascota(${m.id})">Historial</button>
                 </div>
             </div>
         `;
         cont.appendChild(card);
     });
-    // actualizar select en mascotas
-    let sel = document.querySelector("#form-mascota select[name=dueno]");
-    if(sel) {
-        sel.innerHTML = `<option value="">Dueño</option>`;
-        duenos.forEach(d => {
-            sel.innerHTML += `<option value="${d.id}">${d.nombre} (${d.dni})</option>`;
-        });
-    }
 }
-document.getElementById("form-mascota").onsubmit = function(e) {
-    e.preventDefault();
-    let nombre = this.nombre.value.trim();
-    let edad = +this.edad.value;
-    let especie = this.especie.value.trim();
-    let peso = this.peso.value.trim();
-    let nacimiento = this.nacimiento.value;
-    let dueno = +this.dueno.value;
-    if(!nombre || !edad || !especie || !dueno) return;
-    mascotas.push({id: nextMascota++, nombre, edad, especie, peso, nacimiento, dueno, historial:[]});
-    this.reset();
-    actualizarMascotas();
-};
+function mostrarFormMascota(id=null) {
+    let m = id ? mascotas.find(m=>m.id===id) : {nombre:"",edad:"",especie:"",peso:"",nacimiento:"",dueno:""};
+    let cont = crearModalContenido(`
+        <h3>${id ? "Editar" : "Registrar"} Mascota</h3>
+        <form id="form-mascota" style="flex-direction:column;max-width:340px">
+            <label>Nombre<input type="text" name="nombre" required value="${m.nombre||""}"></label>
+            <label>Edad<input type="number" name="edad" required min="0" value="${m.edad||""}"></label>
+            <label>Especie<input type="text" name="especie" required value="${m.especie||""}"></label>
+            <label>Peso (kg)<input type="text" name="peso" value="${m.peso||""}"></label>
+            <label>Fecha de nacimiento<input type="date" name="nacimiento" value="${m.nacimiento||""}"></label>
+            <label>Dueño
+                <select name="dueno" required>
+                    <option value="">Seleccionar dueño</option>
+                    ${duenos.map(d=>`<option value="${d.id}" ${d.id==m.dueno?"selected":""}>${d.nombre} (${d.dni})</option>`).join("")}
+                </select>
+            </label>
+            <button type="submit">${id ? "Guardar cambios" : "Registrar"}</button>
+        </form>
+    `);
+    cont.querySelector("form").onsubmit = function(e) {
+        e.preventDefault();
+        let datos = Object.fromEntries(new FormData(this).entries());
+        if(!datos.nombre.trim() || !datos.edad || !datos.especie.trim() || !datos.dueno) return;
+        datos.edad = parseInt(datos.edad);
+        datos.dueno = parseInt(datos.dueno);
+        if(id) {
+            Object.assign(m, datos);
+        } else {
+            datos.id = nextMascota++;
+            datos.historial = [];
+            datos.recetas = [];
+            mascotas.push(datos);
+        }
+        cerrarModal();
+        renderMascotas();
+    };
+    abrirModal(cont);
+}
 window.eliminarMascota = function(id) {
     if(confirm("¿Eliminar esta mascota?")) {
         mascotas = mascotas.filter(m=>m.id!==id);
-        actualizarMascotas();
+        renderMascotas();
     }
 };
-window.abrirEditarMascota = function(id) {
+window.abrirEditarMascota = function(id) { mostrarFormMascota(id); }
+window.verHistorialMascota = function(id) {
     let m = mascotas.find(m=>m.id===id);
     if(!m) return;
-    let modal = document.getElementById("modal-mascota");
-    let form = document.getElementById("form-editar-mascota");
-    form.innerHTML = `
-        <input type="text" name="nombre" value="${m.nombre}" required>
-        <input type="number" name="edad" value="${m.edad}" min="0" required>
-        <input type="text" name="especie" value="${m.especie}" required>
-        <input type="text" name="peso" value="${m.peso||""}">
-        <input type="date" name="nacimiento" value="${m.nacimiento||""}">
-        <select name="dueno" required>
-            ${duenos.map(d=>`<option value="${d.id}" ${d.id===m.dueno?"selected":""}>${d.nombre} (${d.dni})</option>`).join("")}
-        </select>
-        <button type="submit">Guardar cambios</button>
-    `;
-    form.onsubmit = function(e) {
-        e.preventDefault();
-        m.nombre = this.nombre.value.trim();
-        m.edad = +this.edad.value;
-        m.especie = this.especie.value.trim();
-        m.peso = this.peso.value.trim();
-        m.nacimiento = this.nacimiento.value;
-        m.dueno = +this.dueno.value;
-        cerrarModal("modal-mascota");
-        actualizarMascotas();
-    };
-    abrirModal("modal-mascota");
-};
-window.verHistorial = function(id) {
-    let m = mascotas.find(m=>m.id===id);
-    if(!m) return;
-    let div = document.getElementById("historial-mascota");
-    div.innerHTML = `<b>${m.nombre} - Historial</b><ul>${
-        (m.historial && m.historial.length) ? 
-            m.historial.map(ev=>`<li>${ev}</li>`).join("") : "<li>No hay eventos registrados.</li>"
-    }</ul>
-    <form id="form-add-historial">
-        <input type="text" name="evento" placeholder="Nuevo evento..." required>
-        <button type="submit">Agregar</button>
-    </form>`;
-    document.getElementById("form-add-historial").onsubmit = function(e) {
-        e.preventDefault();
-        if(this.evento.value.trim()) {
-            m.historial = m.historial || [];
-            m.historial.push(this.evento.value.trim());
-            verHistorial(id);
-        }
-    };
-    abrirModal("modal-historial");
+    let recetasMascota = recetas.filter(r=>r.mascota===m.id);
+    let historial = (m.historial||[]).map(ev=>`<li>${ev}</li>`).join("") || "<li>No hay eventos registrados.</li>";
+    let recetasHtml = recetasMascota.length ? recetasMascota.map(r=>`
+        <div class="historial-mascota">
+            <b>Receta #${r.id}: ${formatearFecha(r.fecha)} - Veterinario: ${getVet(r.veterinario).nombre}</b>
+            <ul class="receta-producto-list">
+                ${r.productos.map(p=>`<li>${getProd(p.producto).nombre} - ${p.dosis} | ${p.indicaciones||""}</li>`).join("")}
+            </ul>
+        </div>
+    `).join("") : "<div class='historial-mascota'>No hay recetas médicas para esta mascota.</div>";
+    let cont = crearModalContenido(`
+        <h3>Historial de ${m.nombre}</h3>
+        <b>Eventos:</b>
+        <ul>${historial}</ul>
+        <b>Recetas médicas:</b>
+        ${recetasHtml}
+    `);
+    abrirModal(cont);
 };
 
-// --- Productos ---
-function actualizarProductos() {
+// ------------------ SECCIÓN RECETAS ----------------------
+function renderRecetas() {
+    let sec = secciones.recetas;
+    if (!sec) return;
+    sec.innerHTML = `
+        <h2>Recetas médicas</h2>
+        <button id="btn-agregar-receta">Alta de Receta Médica</button>
+        <div id="recetas-listado"></div>
+    `;
+    sec.querySelector("#btn-agregar-receta").onclick = ()=> mostrarFormReceta();
+    renderRecetasListado();
+}
+function renderRecetasListado() {
+    let cont = document.getElementById("recetas-listado");
+    if (!cont) return;
+    cont.innerHTML = "";
+    recetas.slice().reverse().forEach(r => {
+        let m = mascotas.find(m=>m.id===r.mascota);
+        let d = duenos.find(d=>d.id===m.dueno);
+        let vet = getVet(r.veterinario);
+        cont.innerHTML += `
+            <div class="receta-card">
+                <div class="receta-header">
+                    <div><b>Receta #${r.id}</b> - Mascota: <b>${m.nombre}</b> (Dueño: ${d.nombre})</div>
+                    <span>${formatearFecha(r.fecha)}</span>
+                </div>
+                <div class="receta-detalle">
+                    <b>Veterinario:</b> ${vet.nombre} (${vet.matricula})<br>
+                    <b>Diagnóstico:</b> ${r.diagnostico}
+                    <ul class="receta-producto-list">
+                        ${r.productos.map(p=>`<li>${getProd(p.producto).nombre} - ${p.dosis} | ${p.indicaciones||""}</li>`).join("")}
+                    </ul>
+                </div>
+                <button onclick="mostrarFormVentaDesdeReceta(${r.id})">Registrar venta</button>
+            </div>
+        `;
+    });
+}
+function mostrarFormReceta() {
+    let cont = crearModalContenido(`
+        <h3>Generar Receta Médica</h3>
+        <form id="form-receta" style="flex-direction:column;max-width:440px;">
+            <label>Mascota
+                <select name="mascota" required>
+                    <option value="">Seleccionar mascota</option>
+                    ${mascotas.map(m=>`<option value="${m.id}">${m.nombre} (${getDueno(m.dueno).nombre})</option>`).join("")}
+                </select>
+            </label>
+            <label>Veterinario
+                <select name="veterinario" required>
+                    <option value="">Seleccionar veterinario</option>
+                    ${veterinarios.map(v=>`<option value="${v.id}">${v.nombre} (${v.matricula})</option>`).join("")}
+                </select>
+            </label>
+            <label>Diagnóstico<textarea name="diagnostico" required></textarea></label>
+            <div id="receta-productos">
+                <label>Medicamento/Producto
+                    <select name="producto" required>
+                        <option value="">Seleccionar producto</option>
+                        ${productos.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join("")}
+                    </select>
+                </label>
+                <label>Dosis<input type="text" name="dosis" required></label>
+                <label>Indicaciones<textarea name="indicaciones"></textarea></label>
+            </div>
+            <button type="button" id="btn-add-producto">+ Agregar otro producto</button>
+            <button type="submit">Generar Receta</button>
+        </form>
+    `);
+    cont.querySelector("#btn-add-producto").onclick = function() {
+        let div = document.createElement("div");
+        div.innerHTML = `
+            <hr>
+            <label>Medicamento/Producto
+                <select name="producto" required>
+                    <option value="">Seleccionar producto</option>
+                    ${productos.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join("")}
+                </select>
+            </label>
+            <label>Dosis<input type="text" name="dosis" required></label>
+            <label>Indicaciones<textarea name="indicaciones"></textarea></label>
+        `;
+        cont.querySelector("#receta-productos").appendChild(div);
+    };
+    cont.querySelector("form").onsubmit = function(e) {
+        e.preventDefault();
+        let f = new FormData(this);
+        let mascota = +f.get("mascota");
+        let veterinario = +f.get("veterinario");
+        let diagnostico = f.get("diagnostico").trim();
+        let prods = [];
+        let prodElems = this.querySelectorAll("#receta-productos > div, #receta-productos");
+        prodElems.forEach(div=>{
+            let producto = +(div.querySelector("[name=producto]")?.value||"");
+            let dosis = div.querySelector("[name=dosis]")?.value.trim()||"";
+            let indicaciones = div.querySelector("[name=indicaciones]")?.value.trim()||"";
+            if(producto && dosis) prods.push({producto, dosis, indicaciones});
+        });
+        if(!mascota || !veterinario || !diagnostico || prods.length==0) return;
+        recetas.push({
+            id: nextReceta++,
+            mascota,
+            veterinario,
+            diagnostico,
+            productos: prods,
+            fecha: new Date().toISOString().slice(0,10)
+        });
+        cerrarModal();
+        renderRecetas();
+    };
+    abrirModal(cont);
+}
+
+// ----------------- SECCIÓN VENTAS ------------------------
+function renderVentas() {
+    let sec = secciones.ventas;
+    if (!sec) return;
+    sec.innerHTML = `
+        <h2>Registrar Venta de Producto</h2>
+        <div>
+            <button id="btn-agregar-venta">Registrar venta directa</button>
+        </div>
+        <div id="ventas-listado"></div>
+    `;
+    sec.querySelector("#btn-agregar-venta").onclick = ()=> mostrarFormVenta();
+    renderVentasListado();
+}
+function renderVentasListado() {
+    let cont = document.getElementById("ventas-listado");
+    if (!cont) return;
+    cont.innerHTML = "";
+    ventas.slice().reverse().forEach(v => {
+        let d = getDueno(v.dueno);
+        let r = recetas.find(r=>r.id===v.receta);
+        cont.innerHTML += `
+            <div class="venta-card">
+                <div class="venta-header">
+                    <span>Venta #${v.id} - Dueño: <b>${d.nombre}</b></span>
+                    <span>${formatearFecha(v.fecha)}</span>
+                </div>
+                <div class="venta-detalle">
+                    <b>Productos vendidos:</b>
+                    <ul class="venta-producto-list">
+                        ${v.productos.map(p=>`<li>${getProd(p.producto).nombre} x ${p.cantidad} u. - $${getProd(p.producto).precio} c/u</li>`).join("")}
+                    </ul>
+                    <b>Total: </b> $${v.total}
+                    <br><b>Receta asociada:</b> ${r ? "#"+r.id+" ("+getMascota(r.mascota).nombre+")" : "-"}
+                </div>
+            </div>
+        `;
+    });
+}
+function mostrarFormVentaDesdeReceta(recetaId) {
+    let r = recetas.find(r=>r.id===recetaId);
+    let m = mascotas.find(m=>m.id===r.mascota);
+    let d = duenos.find(d=>d.id===m.dueno);
+    let cont = crearModalContenido(`
+        <h3>Venta asociada a receta #${r.id} (${m.nombre})</h3>
+        <form id="form-venta" style="flex-direction:column;max-width:440px;">
+            <label>Dueño
+                <input type="text" value="${d.nombre}" readonly>
+            </label>
+            <label>Mascota
+                <input type="text" value="${m.nombre}" readonly>
+            </label>
+            <b>Productos recetados:</b>
+            <div id="venta-productos-list">
+                ${r.productos.map((p,i)=>`
+                    <div>
+                        <label>${getProd(p.producto).nombre}
+                            <input type="number" name="cantidad${i}" min="1" max="${getProd(p.producto).stock}" value="1" required>
+                            <span style="font-size:.9em;color:#666;">Stock: ${getProd(p.producto).stock}</span>
+                        </label>
+                    </div>
+                `).join("")}
+            </div>
+            <button type="submit">Registrar venta</button>
+        </form>
+    `);
+    cont.querySelector("form").onsubmit = function(e) {
+        e.preventDefault();
+        let productosVendidos = [];
+        let total = 0;
+        r.productos.forEach((p,i)=>{
+            let cantidad = +this["cantidad"+i].value;
+            if(cantidad>0 && cantidad <= getProd(p.producto).stock) {
+                productosVendidos.push({producto: p.producto, cantidad});
+                total += cantidad * getProd(p.producto).precio;
+            }
+        });
+        if(productosVendidos.length==0) return;
+        productosVendidos.forEach(pv=>{
+            let prod = getProd(pv.producto);
+            prod.stock -= pv.cantidad;
+        });
+        ventas.push({
+            id: nextVenta++,
+            dueno: d.id,
+            receta: r.id,
+            productos: productosVendidos,
+            fecha: new Date().toISOString().slice(0,10),
+            total
+        });
+        cerrarModal();
+        renderVentas();
+        renderProductos();
+    };
+    abrirModal(cont);
+}
+function mostrarFormVenta() {
+    let cont = crearModalContenido(`
+        <h3>Venta directa asociada a receta</h3>
+        <form id="form-venta" style="flex-direction:column;max-width:440px;">
+            <label>Receta
+                <select name="receta" required>
+                    <option value="">Seleccionar receta</option>
+                    ${recetas.map(r=>{
+                        let m = getMascota(r.mascota);
+                        let d = getDueno(m.dueno);
+                        return `<option value="${r.id}">#${r.id} - ${m.nombre} (${d.nombre})</option>`;
+                    }).join("")}
+                </select>
+            </label>
+            <div id="venta-productos-list"></div>
+            <button type="submit" disabled>Registrar venta</button>
+        </form>
+    `);
+    let recetaSelect = cont.querySelector("select[name=receta]");
+    recetaSelect.onchange = function() {
+        let rid = +this.value;
+        let r = recetas.find(r=>r.id===rid);
+        let div = cont.querySelector("#venta-productos-list");
+        if(!r) { div.innerHTML=""; cont.querySelector("button[type=submit]").disabled = true; return; }
+        div.innerHTML = "<b>Productos recetados:</b><br>" + r.productos.map((p,i)=>`
+            <div>
+                <label>${getProd(p.producto).nombre}
+                    <input type="number" name="cantidad${i}" min="1" max="${getProd(p.producto).stock}" value="1" required>
+                    <span style="font-size:.9em;color:#666;">Stock: ${getProd(p.producto).stock}</span>
+                </label>
+            </div>
+        `).join("");
+        cont.querySelector("button[type=submit]").disabled = false;
+    };
+    cont.querySelector("form").onsubmit = function(e) {
+        e.preventDefault();
+        let rid = +this.receta.value;
+        let r = recetas.find(r=>r.id===rid);
+        let m = mascotas.find(m=>m.id===r.mascota);
+        let d = duenos.find(d=>d.id===m.dueno);
+        let productosVendidos = [];
+        let total = 0;
+        r.productos.forEach((p,i)=>{
+            let cantidad = +this["cantidad"+i].value;
+            if(cantidad>0 && cantidad <= getProd(p.producto).stock) {
+                productosVendidos.push({producto: p.producto, cantidad});
+                total += cantidad * getProd(p.producto).precio;
+            }
+        });
+        if(productosVendidos.length==0) return;
+        productosVendidos.forEach(pv=>{
+            let prod = getProd(pv.producto);
+            prod.stock -= pv.cantidad;
+        });
+        ventas.push({
+            id: nextVenta++,
+            dueno: d.id,
+            receta: r.id,
+            productos: productosVendidos,
+            fecha: new Date().toISOString().slice(0,10),
+            total
+        });
+        cerrarModal();
+        renderVentas();
+        renderProductos();
+    };
+    abrirModal(cont);
+}
+
+// --------------- SECCIÓN PRODUCTOS -----------------------
+function renderProductos() {
+    let sec = secciones.productos;
+    if (!sec) return;
+    sec.innerHTML = `
+        <h2>Gestión de Productos</h2>
+        <form id="form-producto">
+            <input type="text" placeholder="Nombre" required name="nombre">
+            <input type="number" placeholder="Stock" min="0" required name="stock">
+            <input type="number" placeholder="Precio" min="1" required name="precio">
+            <input type="date" placeholder="Vencimiento" required name="vencimiento">
+            <button type="submit">Agregar producto</button>
+        </form>
+        <div class="buscador-productos">
+            <input type="text" id="buscar-producto" placeholder="Buscar producto">
+            <button id="filtrar-productos">Filtrar</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Stock</th>
+                    <th>Precio</th>
+                    <th>Vencido</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-productos"></tbody>
+        </table>
+    `;
+    sec.querySelector("#form-producto").onsubmit = function(e) {
+        e.preventDefault();
+        let nombre = this.nombre.value.trim();
+        let stock = +this.stock.value;
+        let precio = +this.precio.value;
+        let vencimiento = this.vencimiento.value;
+        if(!nombre || !vencimiento || !precio) return;
+        productos.push({id: nextProducto++, nombre, stock, precio, vencimiento});
+        this.reset();
+        renderProductos();
+    };
+    sec.querySelector("#buscar-producto").addEventListener("input", renderProductosListado);
+    sec.querySelector("#filtrar-productos").addEventListener("click", renderProductosListado);
+    renderProductosListado();
+}
+function renderProductosListado() {
     let body = document.getElementById("tabla-productos");
+    if (!body) return;
     let buscar = document.getElementById("buscar-producto").value.trim().toLowerCase();
     body.innerHTML = "";
     productos
@@ -322,6 +659,7 @@ function actualizarProductos() {
             tr.innerHTML = `
                 <td>${p.nombre}</td>
                 <td>${p.stock} ${p.stock===1?"unidad":"unidades"}</td>
+                <td>$${p.precio}</td>
                 <td class="${vencido?'vencido':''}">${vencido?"Sí":"No"}</td>
                 <td>
                     <button onclick="abrirEditarProducto(${p.id})">Editar</button>
@@ -331,66 +669,85 @@ function actualizarProductos() {
             body.appendChild(tr);
         });
 }
-document.getElementById("form-producto").onsubmit = function(e) {
-    e.preventDefault();
-    let nombre = this.nombre.value.trim();
-    let stock = +this.stock.value;
-    let vencimiento = this.vencimiento.value;
-    if(!nombre || !vencimiento) return;
-    productos.push({id: nextProducto++, nombre, stock, vencimiento});
-    this.reset();
-    actualizarProductos();
-};
-document.getElementById("buscar-producto").addEventListener("input", actualizarProductos);
-document.getElementById("filtrar-productos").addEventListener("click", actualizarProductos);
-
 window.eliminarProducto = function(id) {
     if(confirm("¿Eliminar este producto?"))
         productos = productos.filter(p=>p.id!==id);
-    actualizarProductos();
+    renderProductos();
 };
 window.abrirEditarProducto = function(id) {
     let p = productos.find(p=>p.id===id);
     if(!p) return;
-    let modal = document.getElementById("modal-producto");
-    let form = document.getElementById("form-editar-producto");
-    form.innerHTML = `
-        <input type="text" name="nombre" value="${p.nombre}" required>
-        <input type="number" name="stock" value="${p.stock}" min="0" required>
-        <input type="date" name="vencimiento" value="${p.vencimiento}" required>
-        <button type="submit">Guardar cambios</button>
-    `;
-    form.onsubmit = function(e) {
+    let cont = crearModalContenido(`
+        <h3>Editar Producto</h3>
+        <form id="form-editar-producto" style="flex-direction:column;max-width:340px;">
+            <label>Nombre<input type="text" name="nombre" required value="${p.nombre}"></label>
+            <label>Stock<input type="number" name="stock" min="0" required value="${p.stock}"></label>
+            <label>Precio<input type="number" name="precio" min="1" required value="${p.precio}"></label>
+            <label>Vencimiento<input type="date" name="vencimiento" required value="${p.vencimiento}"></label>
+            <button type="submit">Guardar cambios</button>
+        </form>
+    `);
+    cont.querySelector("form").onsubmit = function(e) {
         e.preventDefault();
         p.nombre = this.nombre.value.trim();
         p.stock = +this.stock.value;
+        p.precio = +this.precio.value;
         p.vencimiento = this.vencimiento.value;
-        cerrarModal("modal-producto");
-        actualizarProductos();
+        cerrarModal();
+        renderProductos();
     };
-    abrirModal("modal-producto");
+    abrirModal(cont);
 };
 function vencidoProducto(p) {
     if(!p.vencimiento) return false;
     return new Date(p.vencimiento) < new Date();
 }
 
-// --- Modales ---
-function abrirModal(id) {
-    document.getElementById(id).classList.add("activo");
-}
-function cerrarModal(id) {
-    document.getElementById(id).classList.remove("activo");
-}
-document.querySelectorAll(".cerrar-modal").forEach(span=>{
-    span.onclick = ()=> cerrarModal(span.getAttribute("data-modal"));
-});
-window.onclick = function(e) {
-    if(e.target.classList && e.target.classList.contains("modal"))
-        e.target.classList.remove("activo");
+// --------------- SECCIÓN USUARIO/DASHBOARD -----------------
+function renderUsuario() {
+    secciones.usuario.innerHTML = `
+        <div class="usuario-card">
+            <span class="icon-user usuario-grande"></span>
+            <div>
+                <h2>Usuario Veterinario</h2>
+                <p>¡Bienvenido a tu sistema!</p>
+                <ul>
+                    <li><b>Total dueños:</b> ${duenos.length}</li>
+                    <li><b>Total mascotas:</b> ${mascotas.length}</li>
+                    <li><b>Total productos:</b> ${productos.length}</li>
+                    <li><b>Recetas:</b> ${recetas.length}</li>
+                    <li><b>Ventas:</b> ${ventas.length}</li>
+                </ul>
+            </div>
+        </div>
+    `;
 }
 
-// --- Utilidades ---
+// -------------------- MODALES Y UTILIDADES --------------------
+function abrirModal(htmlNode) {
+    let modal = document.getElementById("modal-general");
+    let content = document.getElementById("modal-general-content");
+    content.innerHTML = "";
+    content.appendChild(htmlNode);
+    modal.classList.add("activo");
+    let span = document.createElement("span");
+    span.className = "cerrar-modal";
+    span.innerHTML = "&times;";
+    span.onclick = cerrarModal;
+    content.appendChild(span);
+}
+function cerrarModal() {
+    document.getElementById("modal-general").classList.remove("activo");
+}
+window.onclick = function(e) {
+    if(e.target.classList && e.target.classList.contains("modal"))
+        cerrarModal();
+};
+function crearModalContenido(html) {
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    return div;
+}
 function addDays(dias) {
     let d = new Date();
     d.setDate(d.getDate()+dias);
@@ -406,15 +763,29 @@ function getMascotaEmoji(especie) {
     return "🐾";
 }
 function getAvatarDueno(tipo, grande=false) {
-    // SVG avatar cartoon style (3 variantes)
     const size = grande ? 92 : 48;
     if(tipo==2) return `<img src="https://api.dicebear.com/8.x/open-peeps/svg?seed=Tom&backgroundColor=b7e6a2" width="${size}" height="${size}" alt="avatar" style="border-radius:50%">`;
     if(tipo==3) return `<img src="https://api.dicebear.com/8.x/adventurer/svg?seed=Alex&backgroundColor=b7e6a2" width="${size}" height="${size}" alt="avatar" style="border-radius:50%">`;
-    // Default tipo 1 - hombre genérico
     return `<img src="https://api.dicebear.com/8.x/icons/svg?seed=User&backgroundColor=b7e6a2" width="${size}" height="${size}" alt="avatar" style="border-radius:50%">`;
 }
+function getProd(id) { return productos.find(p=>p.id===id);}
+function getDueno(id) { return duenos.find(d=>d.id===id);}
+function getMascota(id) { return mascotas.find(m=>m.id===id);}
+function getVet(id) { return veterinarios.find(v=>v.id===id);}
+function formatearFecha(f) {
+    if(!f) return "-";
+    let d = new Date(f);
+    if(isNaN(d.getTime())) return f;
+    return d.toLocaleDateString();
+}
 
-// --- Inicialización ---
-vistaListaDuenos();
-actualizarMascotas();
-actualizarProductos();
+// ----------- INICIALIZACIÓN SEGURA: DOMContentLoaded --------
+document.addEventListener("DOMContentLoaded", () => {
+    renderDuenos();
+    renderMascotas();
+    renderRecetas();
+    renderVentas();
+    renderProductos();
+    renderUsuario();
+    mostrarSeccion("duenos"); // Puedes cambiar a "mascotas" si prefieres
+});

@@ -6,12 +6,14 @@
     --borde: #d6eddc;
     --rojo: #d43c3c;
 }
+
 body {
     margin: 0;
     font-family: 'Segoe UI', Arial, sans-serif;
     background: var(--gris);
     color: var(--negro);
 }
+
 header {
     display: flex;
     align-items: center;
@@ -22,6 +24,7 @@ header {
     z-index: 100;
     min-height: 62px;
 }
+
 .logo {
     font-weight: bold;
     font-size: 2em;
@@ -29,11 +32,13 @@ header {
     color: #fff;
     text-shadow: 1px 1px 1px #7aa55d;
 }
+
 nav {
     display: flex;
     gap: 1em;
     flex: 1;
 }
+
 nav button {
     background: transparent;
     border: none;
@@ -45,53 +50,78 @@ nav button {
     transition: background .2s;
     cursor: pointer;
 }
-nav button.active, nav button:hover {
+
+nav button.active,
+nav button:hover {
     background: #f2fff1;
     color: var(--verde-oscuro);
 }
+
 .icon-user {
     background: #fff;
     border-radius: 50%;
     display: inline-block;
-    width: 32px; height: 32px;
+    width: 32px;
+    height: 32px;
     background-image: url('data:image/svg+xml;utf8,<svg fill="black" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"/><ellipse cx="12" cy="19" rx="8" ry="5"/></svg>');
     background-size: 65% 65%;
     background-position: center;
     background-repeat: no-repeat;
     vertical-align: middle;
 }
-.usuario-grande {
-    width: 60px; height: 60px;
-}
+
 main {
-    max-width: 900px;
+    max-width: 1000px;
     margin: 2em auto;
     padding: 1em;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 2px 10px #0002;
 }
+
 .seccion {
     display: none;
 }
+
 .seccion.activa {
     display: block;
     animation: fade .5s;
 }
-@keyframes fade {from {opacity:0;} to {opacity:1;}}
 
-h2 { color: var(--verde-oscuro); }
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+h2 {
+    color: var(--verde-oscuro);
+}
+
 form {
     display: flex;
     gap: .5em;
     margin-bottom: 1em;
     flex-wrap: wrap;
 }
-form input, form select {
+
+form input,
+form select,
+form textarea {
     padding: .5em;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
+form textarea {
+    min-width: 180px;
+    min-height: 40px;
+}
+
 form button {
     background: var(--verde-oscuro);
     color: #fff;
@@ -102,28 +132,42 @@ form button {
     cursor: pointer;
     transition: background .2s;
 }
+
 form button:hover {
     background: var(--verde);
     color: var(--negro);
 }
+
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 1em;
 }
-th, td {
+
+th,
+td {
     border: 1px solid var(--borde);
     padding: .7em;
     text-align: left;
 }
+
 th {
     background: var(--verde);
     color: #222;
     font-size: 1.05em;
 }
-tr:nth-child(even) { background: #f6fff6; }
-tr.resaltado { background: #fff8e0; }
-tr.stock-bajo td { color: var(--rojo); }
+
+tr:nth-child(even) {
+    background: #f6fff6;
+}
+
+tr.resaltado {
+    background: #fff8e0;
+}
+
+tr.stock-bajo td {
+    color: var(--rojo);
+}
 
 .buscador-productos {
     margin-bottom: 1em;
@@ -131,58 +175,11 @@ tr.stock-bajo td { color: var(--rojo); }
     gap: .5em;
     align-items: center;
 }
+
 .buscador-productos input[type="text"] {
     flex: 1;
 }
 
-#mascotas-listado {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
-}
-.card-mascota {
-    background: #f9fff7;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px #0001;
-    padding: 1em;
-    min-width: 260px;
-    max-width: 320px;
-    flex: 1 1 260px;
-    display: flex;
-    gap: 1em;
-    align-items: flex-start;
-    border: 1.5px solid var(--borde);
-}
-.card-mascota .foto-mascota {
-    width: 70px; height: 70px;
-    background: #e3f2e6;
-    border-radius: 8px;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    font-size: 3em;
-}
-.card-mascota .info-mascota {
-    flex: 1;
-}
-.card-mascota .acciones {
-    display: flex; gap: .5em;
-    margin-top: .6em;
-}
-.card-mascota .acciones button {
-    font-size: .95em;
-    padding: .4em .9em;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    background: var(--verde-oscuro);
-    color: #fff;
-    transition: background .2s;
-}
-.card-mascota .acciones button:hover {
-    background: var(--verde);
-    color: var(--negro);
-}
 .usuario-card {
     display: flex;
     align-items: center;
@@ -199,10 +196,12 @@ tr.stock-bajo td { color: var(--rojo); }
     align-items: flex-start;
     margin-bottom: 2em;
 }
+
 .ficha-dueno .avatar-dueno {
     min-width: 120px;
     min-height: 120px;
-    width: 120px; height: 120px;
+    width: 120px;
+    height: 120px;
     border-radius: 12px;
     background: #e3f2e6;
     display: flex;
@@ -212,9 +211,11 @@ tr.stock-bajo td { color: var(--rojo); }
     margin-right: 1em;
     border: 1.5px solid var(--borde);
 }
+
 .ficha-dueno .datos-dueno {
     flex: 1;
 }
+
 .ficha-dueno .boton-editar-dueno {
     float: right;
     background: var(--verde-oscuro);
@@ -228,10 +229,12 @@ tr.stock-bajo td { color: var(--rojo); }
     cursor: pointer;
     transition: background .2s;
 }
+
 .ficha-dueno .boton-editar-dueno:hover {
     background: var(--verde);
     color: var(--negro);
 }
+
 .tabla-mascotas-dueno {
     width: 90%;
     margin: 0 auto 1.5em auto;
@@ -240,14 +243,17 @@ tr.stock-bajo td { color: var(--rojo); }
     border: 1.5px solid var(--borde);
     box-shadow: 0 1px 3px #0001;
 }
+
 .tabla-mascotas-dueno th {
     background: var(--verde);
     text-align: center;
 }
+
 .tabla-mascotas-dueno td {
     text-align: center;
     background: #f7fff7;
 }
+
 .boton-modificar-mascotas {
     display: block;
     margin: 1em auto 0 auto;
@@ -261,6 +267,7 @@ tr.stock-bajo td { color: var(--rojo); }
     cursor: pointer;
     transition: background .2s;
 }
+
 .boton-modificar-mascotas:hover {
     background: var(--verde);
     color: var(--negro);
@@ -272,6 +279,7 @@ tr.stock-bajo td { color: var(--rojo); }
     gap: 1.2em;
     margin: 2em 0;
 }
+
 .card-dueno-lista {
     background: #f9fff7;
     border-radius: 10px;
@@ -287,28 +295,36 @@ tr.stock-bajo td { color: var(--rojo); }
     cursor: pointer;
     transition: box-shadow .2s, border .2s;
 }
+
 .card-dueno-lista:hover {
     box-shadow: 0 3px 16px #0002;
     border: 1.5px solid var(--verde-oscuro);
     background: #f3fff3;
 }
+
 .card-dueno-lista .avatar-dueno-lista {
-    width: 56px; height: 56px;
+    width: 56px;
+    height: 56px;
     background: #e3f2e6;
     border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 2.6em;
     margin-right: .5em;
 }
+
 .card-dueno-lista .nombre-dueno {
     font-weight: bold;
     font-size: 1.12em;
     color: #1d4029;
 }
+
 .card-dueno-lista .dni-dueno {
     color: #525252;
     font-size: .95em;
 }
+
 .card-dueno-lista .eliminar-dueno-btn {
     background: var(--rojo);
     color: #fff;
@@ -320,9 +336,11 @@ tr.stock-bajo td { color: var(--rojo); }
     cursor: pointer;
     transition: background .2s;
 }
+
 .card-dueno-lista .eliminar-dueno-btn:hover {
     background: #a01111;
 }
+
 .flecha-volver {
     font-size: 1.8em;
     color: var(--verde-oscuro);
@@ -330,45 +348,192 @@ tr.stock-bajo td { color: var(--rojo); }
     margin-bottom: 1em;
     transition: color .2s;
 }
-.flecha-volver:hover { color: var(--rojo); }
+
+.flecha-volver:hover {
+    color: var(--rojo);
+}
+
+.card-mascota {
+    background: #f9fff7;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px #0001;
+    padding: 1em;
+    min-width: 260px;
+    max-width: 320px;
+    flex: 1 1 260px;
+    display: flex;
+    gap: 1em;
+    align-items: flex-start;
+    border: 1.5px solid var(--borde);
+}
+
+.card-mascota .foto-mascota {
+    width: 70px;
+    height: 70px;
+    background: #e3f2e6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3em;
+}
+
+.card-mascota .info-mascota {
+    flex: 1;
+}
+
+.card-mascota .acciones {
+    display: flex;
+    gap: .5em;
+    margin-top: .6em;
+}
+
+.card-mascota .acciones button {
+    font-size: .95em;
+    padding: .4em .9em;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    background: var(--verde-oscuro);
+    color: #fff;
+    transition: background .2s;
+}
+
+.card-mascota .acciones button:hover {
+    background: var(--verde);
+    color: var(--negro);
+}
+
+.receta-card,
+.venta-card {
+    background: #f7fff7;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px #0001;
+    padding: 1em;
+    margin-bottom: 1em;
+    border: 1.5px solid var(--borde);
+}
+
+.receta-card .receta-header,
+.venta-card .venta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.receta-card .receta-detalle,
+.venta-card .venta-detalle {
+    margin-top: .5em;
+}
+
+.receta-producto-list {
+    margin-left: 1.5em;
+}
+
+.receta-producto-list li {
+    margin-bottom: .2em;
+}
+
+.venta-producto-list {
+    margin-left: 1.5em;
+}
+
+.venta-producto-list li {
+    margin-bottom: .2em;
+}
+
+.historial-mascota {
+    background: #e3f2e6;
+    border-radius: 9px;
+    padding: .7em 1em;
+    margin: .6em 0;
+}
+
+.venta-pendiente {
+    color: #ff9500;
+    font-weight: bold;
+}
+
+.venta-completada {
+    color: #13b713;
+    font-weight: bold;
+}
 
 .modal {
     display: none;
     position: fixed;
     z-index: 900;
-    left: 0; top: 0; width: 100vw; height: 100vh;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
     background: #0007;
     align-items: center;
     justify-content: center;
 }
-.modal.activo { display: flex; }
+
+.modal.activo {
+    display: flex;
+}
+
 .modal-contenido {
     background: #fff;
     border-radius: 12px;
     padding: 2em 1.5em 1.2em 1.5em;
     min-width: 320px;
-    max-width: 420px;
+    max-width: 480px;
     position: relative;
     box-shadow: 0 4px 20px #0002;
 }
+
 .cerrar-modal {
     position: absolute;
-    top: 1em; right: 1em;
+    top: 1em;
+    right: 1em;
     font-size: 1.7em;
     color: #aaa;
     cursor: pointer;
     font-weight: bold;
 }
-.cerrar-modal:hover { color: var(--rojo); }
 
-tr.vencido td, .vencido { color: var(--rojo) !important; }
-td.vencido::before { content: "⚠ "; }
-tr.stock-bajo td { font-weight: bold; }
+.cerrar-modal:hover {
+    color: var(--rojo);
+}
 
-@media (max-width: 700px) {
-    main { padding: 0.2em; }
-    .card-mascota, .ficha-dueno { flex-direction: column; align-items: stretch; }
-    header { flex-direction: column; }
-    nav { width: 100%; }
-    .ficha-dueno .avatar-dueno { margin: 0 auto 1em auto; }
+tr.vencido td,
+.vencido {
+    color: var(--rojo) !important;
+}
+
+td.vencido::before {
+    content: "⚠ ";
+}
+
+tr.stock-bajo td {
+    font-weight: bold;
+}
+
+@media (max-width: 850px) {
+
+    .ficha-dueno,
+    .card-mascota {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    main {
+        padding: 0.2em;
+    }
+
+    header {
+        flex-direction: column;
+    }
+
+    nav {
+        width: 100%;
+    }
+
+    .ficha-dueno .avatar-dueno {
+        margin: 0 auto 1em auto;
+    }
 }
