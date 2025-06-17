@@ -382,7 +382,7 @@ function mostrarFormReceta() {
                         ${productos.map(p=>`<option value="${p.id}">${p.nombre}</option>`).join("")}
                     </select>
                 </label>
-                <label>Dosis<input type="text" name="dosis" required></label>
+                <label>Dosis<input type="text" name="dosis"></label>
                 <label>Indicaciones<textarea name="indicaciones"></textarea></label>
             </div>
             <button type="button" id="btn-add-producto">+ Agregar otro producto</button>
